@@ -7,11 +7,20 @@ namespace emoji_search_back
 {
     public class Startup
     {
+        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
         // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+
+            services.AddCors(options =>
+           {
+               options.AddPolicy(name: MyAllowSpecificOrigins, builder =>
+               {
+                   builder.WithOrigins("http://127.0.0.1:26694", "http://localhost:26694");
+               });
+           });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -24,6 +33,9 @@ namespace emoji_search_back
 
             app.UseRouting();
 
+            app.UseCors(MyAllowSpecificOrigins);
+
+            //use static files as main
             app.UseDefaultFiles();
             app.UseStaticFiles();
 
